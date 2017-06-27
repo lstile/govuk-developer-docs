@@ -14,6 +14,47 @@ namespace :assets do
   end
 end
 
+def safe_app_name(app_name)
+  app_name.to_s.gsub('_', '').gsub('-', '')
+end
+
+
+task :x do
+  require "gviz"
+
+  SKIP = %w[static]
+
+  relevant_apps = []
+
+  simple = Gviz.new
+  simple.graph do
+    tree = YAML.load_file('../govuk-puppet/development-vm/dependencies.yml')
+    names = {}
+    tree.each do |key, settings|
+      app_name = safe_app_name(key)
+      names[key] = app_name
+      next if app_name.in?(SKIP)
+
+      # Draw the connections between this app and its dependencies
+      dependent_apps = settings["dependencies"].to_a.map { |t| safe_app_name(t) } - SKIP
+      route app_name => dependent_apps
+
+      relevant_apps << dependent_apps + [app_name]
+    end
+
+    relevant_apps.flatten.uniq.each do |safe_name|
+      # Create a node for the app
+      node safe_name.to_sym, label: names[safe_name]
+    end
+
+    nodes shape: 'polygon'
+
+    global(rankdir: "RL", rankseq: 'equally')
+  end
+
+  simple.save("deps", :png)
+end
+
 desc "Find deployable applications that are not in this repo"
 task :verify_deployable_apps do
   common_yaml = HTTP.get_yaml("https://raw.githubusercontent.com/alphagov/govuk-puppet/master/hieradata/common.yaml")

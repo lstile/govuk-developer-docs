@@ -10,6 +10,7 @@ gem 'activesupport', '~> 5.0'
 gem 'govuk-lint', '~> 2.1'
 gem 'simplecov'
 gem 'chronic'
+gem 'gviz'
 
 # Middleman Gems
 gem 'middleman', '>= 4.0.0'

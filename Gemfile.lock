@@ -73,6 +73,8 @@ GEM
       scss_lint
     govuk_schemas (2.1.1)
       json-schema (~> 2.5.0)
+    gviz (0.3.5)
+      thor
     haml (4.0.7)
       tilt
     hamster (3.0.0)
@@ -243,6 +245,7 @@ DEPENDENCIES
   github-markdown
   govuk-lint (~> 2.1)
   govuk_schemas (~> 2.1.1)
+  gviz
   html-pipeline
   middleman (>= 4.0.0)
   middleman-autoprefixer (~> 2.7.0)
